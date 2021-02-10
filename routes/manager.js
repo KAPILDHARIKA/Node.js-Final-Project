@@ -1,0 +1,200 @@
+const express = require('express');
+const manager = require('../database-utils/Manager')
+const help = require('../database-utils/Help')
+const router = express.Router();
+const tran = require('../database-utils/transaction')
+const emp = require('../database-utils/Employee')
+const tra = null;
+const xss = require('xss')
+
+router.get('/transaction', async(req, res) => {
+    try {
+        x = Object.keys(req.query).toString()
+        const tra = await tran.getTransactionByUsernameMan(x)
+        console.log("transaction: ", tra)
+
+        //res.render('templates/employee_profile_two', { searchDetail: post });
+        res.status(200).json(tra);
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
+
+});
+
+router.get('/', async(req, res) => {
+    try {
+        const man = await manager.getAllManager();
+        if (man.length == 0) {
+            res.render('error', { errorMsg: "No data to display" });
+        } else {
+            res.render('templates/manager_main', { searchDetail: man });
+        }
+        res.status(200);
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
+});
+
+router.get('/resolve/:id', async(req, res) => {
+    try {
+        if ((!req.params.id) || (typeof(req.params.id) != 'string')) {
+            res.status(400).render("error", { errorMsg: "Something wrong with parameters" })
+        }
+        let id = req.params.id
+        let managerName = await help.getManagerByTicketID(id)
+
+        if (req.session.user !== managerName.managerID) {
+            res.status(403).send("Forbidden")
+            return
+        }
+
+        await help.markResolved(id)
+
+        //res.redirect("/manager/" + managerName.managerID)
+        res.redirect('back')
+
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
+
+});
+
+
+router.get('/pending/:id', async(req, res) => {
+    try {
+        if ((!req.params.id) || (typeof(req.params.id) != 'string')) {
+            res.status(400).render("error", { errorMsg: "Something wrong with parameters" })
+        }
+
+        const man = await emp.getEmployeeByPay(req.params.id);
+        if (man.length == 0) {
+            res.render('error', { errorMsg: "No manager found for the respective id" });
+        } else {
+            res.render('templates/pending', { searchDetail: man });
+        }
+        res.status(200);
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
+});
+
+router.get('/users/:id', async(req, res) => {
+
+
+    if (req.session.user !== req.params.id) {
+        res.status(403).send("Forbidden")
+        return
+    }
+    const ticketArray = await help.getHelpData(req.params.id)
+    const employeeList = await emp.getEmployeesByManager(req.params.id)
+    console.log("emp list here below")
+    console.log(employeeList)
+
+
+
+    try {
+        if ((!req.params.id) || (typeof(req.params.id) != 'string')) {
+            res.status(400).render("error", { errorMsg: "Something wrong with parameters" })
+        }
+        // if (isNaN(req.params.id)) {
+        //     res.status(400).render("error", { errorMsg: "Please provide a proper id" })
+        // }
+        const man = await manager.getManagerByUserID(req.params.id);
+        if (man.length == 0) {
+            res.render('error', { errorMsg: "No manager found for the respective id" });
+        } else {
+
+
+
+            res.render('templates/manager_details', { searchDetail: man, tickets: ticketArray, employees: employeeList });
+        }
+        res.status(200);
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
+});
+
+
+router.post('/manager_details', async(req, res) => {
+    try {
+        if ((!req.body.payinput) || (typeof(req.body.payinput) != 'string')) {
+            res.status(400).render("error", { errorMsg: "Something wrong with parameters" })
+        }
+        console.log('starthere')
+        console.log(req.body)
+        const man = await manager.isPaid(xss(req.body.payinput));
+        console.log("MAN BELOW")
+        console.log(man)
+        if (man.length == 0) {
+            res.render('error', { errorMsg: "No data to display" });
+        } else {
+            res.redirect('back');
+        }
+        res.status(200);
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
+});
+
+router.post('/update', async(req, res) => {
+    try {
+        if ((!req.body.updateMag) || (typeof(req.body.updateMag) != 'string')) {
+            res.status(400).render("error", { errorMsg: "Something wrong with parameters" })
+        }
+
+        console.log(req.body.updateMag)
+            // tra = req.body.updateMag;
+        const firstName = xss(req.body.updateMag);
+        console.log(firstName)
+        const man = await manager.getManagerByUserID(firstName)
+        console.log(man)
+        if (man.length == 0) {
+            res.render('error', { errorMsg: "No data to display" });
+        } else {
+            res.render('templates/manager_update', { searchDetail: man, idreq: firstName });
+            res.status(200);
+        }
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
+});
+
+
+router.post('/updated', async(req, res) => {
+    try {
+        if ((!req.body.updateMan) || (typeof(req.body.updateMan) != 'string')) {
+            res.status(400).render("error", { errorMsg: "Please provide the userid" })
+        }
+        if (req.body.FirstNameMan) { if (typeof(req.body.FirstNameMan) != 'string') { res.status(400).render("error", { errorMsg: "Please provide the Firstname" }) } }
+        if (req.body.LastNameEmp) { if (typeof(req.body.LastNameEmp) != 'string') { res.status(400).render("error", { errorMsg: "Please provide the Lastname" }) } }
+        if (req.body.EmailEmp) { if (typeof(req.body.EmailEmp) != 'string') { res.status(400).render("error", { errorMsg: "Please provide the email" }) } }
+        if (req.body.BudgetEmp) { if (typeof(req.body.BudgetEmp) != 'string') { res.status(400).render("error", { errorMsg: "Please provide the budget" }) } }
+
+        const tra = xss(req.body.updateMan);
+        const firstName = xss(req.body.FirstNameMan);
+        const lastName = xss(req.body.LastNameEmp);
+        const email = xss(req.body.EmailEmp);
+        const budget = xss(req.body.BudgetEmp);
+        const man = await manager.updatedManager(tra, firstName, lastName, email, budget)
+        console.log(man)
+        if (man.length == 0) {
+            res.render('error', { errorMsg: "No data to display" });
+        } else {
+            //res.render()
+            //res.status(200);
+        }
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+module.exports = router;

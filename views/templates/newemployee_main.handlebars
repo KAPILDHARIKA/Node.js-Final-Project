@@ -1,0 +1,105 @@
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/assets/semantic/semantic.min.css"/>
+      <title> New Employee</title>
+</head>
+
+<body>
+
+    
+<form id="newempform" action="/newemployee" method="post" class="ui form">
+<div class="ui form">
+    <div class="ui one column stackable center aligned page grid">
+    <div class="column twelve wide">
+    <h1>New Employee</h1>
+    </div>
+    </div>
+    <div></div>
+
+    <div class="ui form">
+    <div class="field">
+    <div class="two fields">
+    <div class="field">
+        <label for="firstName">First Name</label>
+        <input type= "text" id="firstName" name="firstName"  class="text" required="required"/>
+    </div>
+    <div class="field">
+        <label for="lastName">Last Name </label>
+        <input type= "text" id="lastName" name="lastName"  class="text" required="required"/>
+    </div>
+
+    </div>
+    </div>
+    <div class="field">
+        <label for="newusername">Username</label>
+        <input type= "text" id="newusername" name="newusername"  class="text" required="required"/>
+    </div>
+    
+    <div class="field">
+        <label for="empemail">Email Id</label>
+        <input type= "email" id="empemail" name="empemail"  class="text" required="required"/>
+    </div>
+    
+    <div class="field">
+    <div class="two fields">
+    <div class="field">
+        <label for="emphours">Total Work Hours</label>
+        <input type= "number" min="0" id="emphours" name="emphours"  class="text" required="required" oninput="validity.valid||(value='');"/>
+    </div>
+    
+    <div class="field">
+        <label for="empsalary">Basic Salary</label>
+    <input type= "number" min="0" id="empsalary" name="empsalary"  class="text" required="required" oninput="validity.valid||(value='');"/>    </div class="field">
+    </div>
+    </div>
+    </div>    
+    <div class="field">    
+    <label for="managerID">Manager ID</label>
+        <input type= "text" id="managerID" name="managerID"  class="text" required="required"/>
+    </div>
+    <div class="field">
+    <div class="two fields">
+    <div class="field">
+        <label for="payDate">Pay Date</label>
+        <input type= "date" id="payDate" name="date" placeholder="date" class="text" required="required"/>
+    </div>
+    <div class="field">
+        <label for="jobtitle">Job Title</label>
+        <input type= "text" id="jobtitle" name="jobtitle"  class="number" required="required"/>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <div class="ui one column stackable center aligned page grid">
+    <div class="column twelve wide">
+        <button id="emp_button" type="submit" class="ui button" >Submit</button>
+   </div>
+   </div>
+   </div>
+    </form>
+    
+    
+    {{#if error}}
+    <p class="not-found" style="color: brown; font-size:2em; text-align:center">{{error}}</p>
+    {{/if}}
+    <p class="found" style="color:green; font-size:2em ">{{success}}</p>
+    
+   
+    
+<footer id="footer" style="font-family: Georgia,Serif;
+		padding: 6em 0;
+		background: black;
+		color: #fff;
+		text-align: center;">
+		<p>&#169 2019 Payday : Focus on what matters,leave the rest on us!</p>				
+</footer>
+    
+    
+</body>
+
+
+ 

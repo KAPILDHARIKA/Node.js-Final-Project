@@ -1,0 +1,319 @@
+
+    <head>
+       <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="/assets/semantic/semantic.min.css"/>
+		  <script src="/assets/semantic/semantic.min.js"></script>
+     
+
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+            var salaryArray = [['Person', 'Salary']];
+            var hoursArray = [['Person', 'Hours']];
+                {{#each searchDetail.employees}}
+                salaryArray.push(["{{username}}", {{total_salary}}]);
+                {{/each}}
+
+                {{#each employees}}
+                hoursArray.push(["{{username}}", {{total_hours}}]);
+                {{/each}}
+
+            console.log(hoursArray)
+                        console.log(salaryArray)
+
+
+            google.charts.load('current', {'packages':['corechart']});
+
+            // Set a callback to run when the Google Visualization API is loaded.
+            google.charts.setOnLoadCallback(drawChart);
+            google.charts.setOnLoadCallback(drawBarChart);
+
+
+
+            // Callback that creates and populates a data table,
+            // instantiates the pie chart, passes in the data and
+            // draws it.
+
+            function drawChart() {
+
+                // Create the data table.
+                var data = google.visualization.arrayToDataTable(salaryArray);
+                // Set chart options
+
+                // Instantiate and draw our chart, passing in some options.
+                var chart = new google.visualization.PieChart(document.getElementById('pieChart'));
+                var options = {
+                    title: "Total Salary",
+                    width: 600,
+                  height: 400,
+                    legend:'bottom'}
+                  chart.draw(data, options);
+            }
+
+            function drawBarChart(){
+                var data = google.visualization.arrayToDataTable(hoursArray);
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1]);
+
+      var options = {
+        title: "Working Hours",
+        width: 600,
+        height: 400,
+        bar: {groupWidth: "95%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+      chart.draw(view, options);
+      }
+
+
+      
+</script>
+            <link rel="stylesheet" type="text/css" href="/css/manager.css">
+        <style>
+            #overflowTest {
+                max-height: 80%;
+                max-width:100%;
+                overflow: scroll;
+                padding-top: 1%;
+            }
+
+             #demo {
+                max-height: 50%;
+                max-width:100%;
+                overflow: scroll;
+                padding-top: 1%;
+            }
+        </style>
+    </head>
+
+    <body>
+    <main>
+  <div class="ui four column grid">
+  <div class="row">
+    <div class="column"></div>
+    <div class="column"></div>
+    <div class="column"></div>
+  </div>
+    <div class="row">
+  <div class="column"></div>
+  <div class="column"></div>
+  <div class="column"></div>
+  <div class="column"></div>
+    </div>
+</div>
+  <div class="ui one column stackable center aligned page grid">
+  <h1 class="ui header">
+  <i class="settings icon"></i>
+  <div class="content">
+    {{searchDetail.firstName}} {{searchDetail.lastName}} (ID: {{searchDetail.user_login_id}})
+    <div class="sub header">Manager Dashboard</div>
+  </div>
+</h1>
+     <i class="money bill alternate outline" size="large"></i>
+
+  </div>
+<div class="ui three column grid center aligned">
+  <div class="row">
+    {{!-- Column 1 --}}
+    <div class="column">    
+      <div class="ui labeled button" tabindex="0">
+        <div class="ui blue button">
+        <i class="address card"></i> Total Employees
+        </div>
+          <a class="ui basic blue left pointing label">
+          {{searchDetail.employees.length}}
+          </a>
+      </div>
+    </div>
+      {{!-- Column 2 --}}
+
+    <div class="column">  
+      <div class="ui labeled button" tabindex="0">
+        <div class="ui blue button">
+        <i class="money bill alternate outline"></i> Total Budget
+        </div>
+          <a class="ui basic blue left pointing label">
+          {{searchDetail.budget}}
+          </a>
+      </div>
+    </div>
+      {{!-- Column 3 --}}
+        {{!--  --}}
+    <div class="column">  
+      <div class="ui labeled button" tabindex="0">
+        <div class="ui black large buttons">
+          <input class="ui button" type="button" value="    Log out    " id="button" onclick="location.href = '/logout'">
+            <div class="or"></div>
+              <div>
+                <form   id="manager_update" action="/manager/update"  name="manager_update"  method='POST' >
+                  <button type="submit" class="ui button"  id="{{searchDetail.user_login_id}}" class="button">Update Details</button>  
+                  <input id="{{searchDetail.user_login_id}}" name="updateMag" value="{{searchDetail.user_login_id}}" type="text" style="width:50px; font-size: xx-small; visibility:hidden">
+                  </form>
+              </div>
+        </div>
+  
+      </div>
+    </div>
+
+  
+    <div class="ui grid">
+      <div id="pieChart" class="four wide column"/>
+    </div>
+  
+    <div class="four wide column"></div>
+      <div id="columnchart_values" class="four wide column"></div>
+      <div class="ui one column stackable center aligned page grid"></div>
+  </div>
+  </div>
+
+  {{!-- ################################################################################################################ --}}
+<div class="ui three column">
+  
+  <div class="row">
+    <div class="column"></div>
+    <div class="column"></div>
+    <div class="column"></div>
+  </div>
+</div>
+
+{{!-- Xxxxxxxxxxxxxxxxxxxxxxxxxxxx --}}
+
+<div class="ui three column wide grid page">
+
+  <div class="row">
+    {{!-- Column 1 --}}
+    <div class="column">    
+       
+          <input class="ui secondary basic button" type="button" value="Last 10 Transaction" id="button_man">
+    <ul id="demo"  >
+          <a style="visibility: collapse;">Username: <span id="usernamedetail">{{searchDetail.user_login_id}}</span></a>  
+
+      <script src="/transaction_man.js"></script>
+    </ul>
+
+    </div>
+      {{!-- Column 2 --}}
+
+    <div class="column">  
+        
+<input class="ui secondary basic button" type="button" value="Pending Tasks" id="pending"
+           onclick="location.href='/manager/pending/{{searchDetail.user_login_id}}'" style="margin-left:2em">
+
+    </div>
+      {{!-- Column 3 --}}
+    <div class="column">  
+            <input class="ui secondary basic button" type="button" value="Tickets" id="tickets" onclick="showTickets()">
+    <script src="/manager.js"></script>
+    <ol id="ticketList">
+        {{#if tickets}}
+            {{#each tickets}}
+                <li>Employee: {{this.employeeID}}, Issue: {{this.issue}}</li>
+                <button id="{{this._id}}" onclick='resolveHelp("{{{this._id}}}")'>Resolve</button>
+            {{/each}}
+        {{else}}
+            No tickets to show.
+        {{/if}}
+
+    </ol>
+  
+    </div>
+
+
+  </div>
+  </div>
+
+{{!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxx --}}
+
+<div class="ui three column">
+  <div class="row">
+    <div class="column"></div>
+    <div class="column"></div>
+    <div class="column"></div>
+  </div>
+</div>
+
+
+  {{!-- ################################################################################################################ --}}
+
+    
+  <div class="ui one column grid">
+    <h2 class="ui header">Employees:</h2>
+      <div>
+                <form   id="search_employee"  action="/employee/search" method="POST" name="search_employee">
+                  <label for="UsernameEmp" class="ui header">Search Username </label>
+                  <input type= "text" id="SearchEmp" name="SearchEmp"  class="text" required="required" flag="False"/>
+                  <button type="submit"  class="ui mini secondary button" id="{{username}}" >Search</button>  
+                  </form>
+     </div>
+
+
+
+   {{#if userdata}}
+
+    <div id="overflowTest">
+  
+          <ul>
+              <li>
+                <form   id="manager_details" action="/manager/manager_details"  name="manager_details"  method='POST' >
+                 <a  href="/employee/empprof/{{userdata.username}}" id="{{userdata.username}}">Name: {{userdata.username}} Salary: {{userdata.total_salary}} Pay Status: {{userdata.paidFlag}} </a>
+                 <button type="submit" class="ui mini secondary button"  id={{userdata.username}} >Pay</button>  
+                  <input id="{{userdata.username}}" name="payinput" value="{{userdata.username}}" type="text" style="width:50px; font-size: xx-small; visibility:hidden">
+                  </form>
+
+              </li>
+          </ul>
+               
+             </li>
+  </div>
+
+  {{else}}
+
+  <div id="overflowTest">
+        {{#each searchDetail.employees}}
+          <ul >
+              <li>
+                <form   id="manager_details" action="/manager/manager_details"  name="manager_details"  method='POST' >
+                 <a  href="/employee/empprof/{{username}}" id="{{username}}">Emp UserID: {{username}} Salary: {{total_salary}} Pay Status: {{paidFlag}} </li></a>
+                 <button type="submit"   id={{username}} class="ui mini secondary button">Pay</button>  
+                  <input id="{{username}}" name="payinput" value="{{username}}" type="text" style="width:50px; font-size: xx-small; visibility:hidden">
+                  </form>
+
+              </li>
+          </ul>
+               
+            {{/each}}
+          
+             </li>
+  </div>
+
+
+   {{/if}}
+
+   </div>
+    
+     
+           {{!-- <form id="update" name="update"  action="/manager/update"  method="POST">
+
+       <button type="submit"   id={{searchDetail.user_login_id}} class="button">Update Details</button>  
+      <input id="{{searchDetail.user_login_id}}" value="{{searchDetail.user_login_id}}" name="updateMag" value="{{searchDetail.user_login_id}}" type="text" style="width:50px; font-size: xx-small; visibility">
+     </form> --}}
+
+
+
+  
+    {{!-- <input type="button" value="Log out" id="button" onclick="location.href = '/logout'"> --}}
+    
+  
+</main>
+<script src="/employee.js"></script>
+
+<footer id="footer" style="font-family: Georgia,Serif;
+		padding: 6em 0;
+		background: black;
+		color: #fff;
+		text-align: center;">
+		<p>&#169 2019 Payday : Focus on what matters,leave the rest on us!</p>				
+</footer>
+</body>
+

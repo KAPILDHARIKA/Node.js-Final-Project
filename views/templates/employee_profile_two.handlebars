@@ -1,0 +1,117 @@
+<head>
+    <title> Login Page </title>
+{{!-- <link rel="stylesheet" href="/assets/css/main.css"> --}}
+<link rel="stylesheet" href="/assets/semantic/semantic.min.css"/>
+		  <script src="/assets/semantic/semantic.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+<main>
+<div class="ui one column stackable center aligned page grid">
+    <div class="column twelve wide">
+<h1>Employee: {{searchDetail.firstName}} {{searchDetail.lastName}}  </h1>
+  <div class="sub header">Information Below</div>
+</div>
+<div>{{#if message}}
+        <h3>{{message}}</h3>
+    {{/if}}
+</div>
+
+</div>
+
+<div class="ui seven column center aligned grid">
+  <div class="row">
+    <div class="column ui header">
+            <li >Username: <span id="usernamedetail">{{searchDetail.username}}</span>  </li>
+</div>
+    <div class="column ui header">
+    <li>Total Hours: {{searchDetail.total_hours}}</li>
+</div>
+    <div class="column ui header">
+    <li>BasicSalary : ${{searchDetail.basic_salary}}</li>
+</div>
+    <div class="column ui header">
+    <li>TotalSalary: {{searchDetail.total_salary}}</li>
+</div>
+    <div class="column ui header">
+    <li>ManagerName: {{searchDetail.manager_ID}}</li>
+</div>
+    <div class="column ui header">
+    <li>JobTitle: {{searchDetail.job_title}}</li>
+</div>
+   <div class="column ui header">
+    <li>Paid: {{searchDetail.paidFlag}}</li>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="ui three column center aligned page grid">
+  <div class="row">
+    <div class="column">
+
+<input type="button" value="Last 10 Transaction" class="ui secondary button" id="button" >
+        <li style="visibility: collapse;">Username: <span id="usernamedetail">{{searchDetail.username}}</span>  </li>
+
+<ul id="demo">   
+</ul>
+        
+    </div>
+    <div class="column">
+
+<input type="button" value="Help" id="button" class="ui secondary button" onclick="showForm()">
+
+<form id="helpForm" method="post" action="/submit-help" style="display: none;">
+    <label for="employeeID">Employee ID:</label>
+    <input type="text" name="employeeID" id="employeeID" value="{{searchDetail.username}}">
+    <br>
+    <label for="managerID">Manager ID:</label>
+    <input type="text"  name="managerID" id="managerID" value="{{searchDetail.manager_ID}}">
+    <br>
+    <label for="issue">Issue:</label>
+    <input type="text" name="issue" id="issue">
+    <br>
+    <input type="submit" class="ui mini secondary button" name="submit" id="submit" value="Submit">
+
+</form>
+
+    </div>
+    <div class="column">
+<form   id="employee_update" action="/employee/update"  name="employee_update"  method='POST' >
+                  <button type="submit"  class="ui secondary button" id="{{searchDetail.username}}" class="button">Update Employee</button>  
+                  <input id="{{searchDetail.username}}" name="updateMag" value="{{searchDetail.username}}" type="text" style="width:50px; font-size: xx-small; visibility:hidden">
+                  </form>
+
+    </div>
+  </div>
+</div>
+
+<div class="ui one column center aligned page grid">
+  <div class="row">
+    <div class="column"></div>
+    <button onclick="window.location.href = '/employee/';" class="ui labeled icon button">
+  <i class="angle left
+ icon"></i>
+  Go Back
+</button>
+  </div></div>
+
+     <script src="/transaction.js"> </script>  
+     <script src="/employee.js"></script>
+ </main>
+
+<footer id="footer" style="font-family: Georgia,Serif;
+		padding: 6em 0;
+		background: black;
+		color: #fff;
+		text-align: center;">
+		<p>&#169 2019 Payday : Focus on what matters,leave the rest on us!</p>				
+</footer>
+</body>
+       
